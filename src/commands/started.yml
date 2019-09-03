@@ -1,0 +1,19 @@
+description: |
+  Ping Platypus instance to notify of started job
+parameters:
+  secret-key:
+    description: Auth key for Platypus instance
+    type: env_var_name
+    default: PLATYPUS_SECRET
+  instance:
+    description: Location of Platypus instance
+    type: env_var_name
+    default: PLATYPUS_HOST
+  job-name:
+    description: Job name
+    type: string
+    default: "CircleCI"
+steps:
+  - run: |
+      curl --header "X-PLATYPUS-AUTH: ${<< parameters.secret-key >>}" --header "X-PLATYPUS-TYPE: << parameters.job-name >>" --request "POST" "${<< parameters.instance >>}/poll" \
+      -H "Content-type: application/json" -d '{"status": "started"}'
